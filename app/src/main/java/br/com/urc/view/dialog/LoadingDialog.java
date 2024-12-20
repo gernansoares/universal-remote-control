@@ -1,4 +1,4 @@
-package br.com.urc.dialog;
+package br.com.urc.view.dialog;
 
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;

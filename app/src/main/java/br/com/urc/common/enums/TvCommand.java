@@ -1,4 +1,4 @@
-package br.com.urc.enums;
+package br.com.urc.common.enums;
 
 import lombok.Getter;
 

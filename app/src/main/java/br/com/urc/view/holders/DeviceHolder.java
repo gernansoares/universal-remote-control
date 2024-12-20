@@ -1,4 +1,4 @@
-package br.com.urc.holders;
+package br.com.urc.view.holders;
 
 import android.view.View;
 import android.widget.Button;

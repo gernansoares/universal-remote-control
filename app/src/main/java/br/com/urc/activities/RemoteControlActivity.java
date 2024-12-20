@@ -24,10 +24,10 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import br.com.urc.R;
-import br.com.urc.handler.TokenHandler;
-import br.com.urc.common.config.ssl.GenericTrustManager;
+import br.com.urc.client.handler.TokenHandler;
+import br.com.urc.config.ssl.GenericTrustManager;
 import br.com.urc.client.listeners.TvPairListener;
-import br.com.urc.enums.TvCommand;
+import br.com.urc.common.enums.TvCommand;
 import br.com.urc.client.interceptors.WebSocketInterceptor;
 import lombok.Setter;
 import okhttp3.OkHttpClient;

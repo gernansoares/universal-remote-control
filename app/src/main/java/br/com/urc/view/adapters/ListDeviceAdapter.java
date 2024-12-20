@@ -1,5 +1,6 @@
-package br.com.urc.adapters;
+package br.com.urc.view.adapters;
 
+import android.net.wifi.p2p.WifiP2pDevice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -7,20 +8,18 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.samsung.multiscreen.Service;
-
 import java.util.List;
 
 import br.com.urc.R;
-import br.com.urc.activities.ListDevicesActivitySdk;
-import br.com.urc.holders.DeviceHolder;
+import br.com.urc.activities.ListDevicesActivity;
+import br.com.urc.view.holders.DeviceHolder;
 
-public class ListDeviceAdapterSdk extends RecyclerView.Adapter {
+public class ListDeviceAdapter extends RecyclerView.Adapter {
 
-    private ListDevicesActivitySdk context;
-    private List<Service> devices;
+    private ListDevicesActivity context;
+    private List<WifiP2pDevice> devices;
 
-    public ListDeviceAdapterSdk(ListDevicesActivitySdk context, List<Service> devices) {
+    public ListDeviceAdapter(ListDevicesActivity context, List<WifiP2pDevice> devices) {
         this.context = context;
         this.devices = devices;
     }
@@ -35,8 +34,8 @@ public class ListDeviceAdapterSdk extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder view, int position) {
         DeviceHolder holder = (DeviceHolder) view;
-        final Service device = devices.get(position);
-        holder.getDeviceName().setText(device.getName());
+        final WifiP2pDevice device = devices.get(position);
+        holder.getDeviceName().setText(device.deviceName);
         holder.getDeviceName().setOnClickListener(v -> context.connectToDevice(device));
 
     }

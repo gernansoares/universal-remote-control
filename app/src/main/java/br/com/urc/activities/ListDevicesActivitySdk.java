@@ -22,7 +22,7 @@ import com.samsung.multiscreen.Search;
 import com.samsung.multiscreen.Service;
 
 import br.com.urc.R;
-import br.com.urc.adapters.ListDeviceAdapterSdk;
+import br.com.urc.view.adapters.ListDeviceAdapterSdk;
 
 public class ListDevicesActivitySdk extends AppCompatActivity {
 

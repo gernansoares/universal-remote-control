@@ -20,9 +20,9 @@ import android.view.MenuItem;
 import java.util.List;
 
 import br.com.urc.R;
-import br.com.urc.adapters.ListDeviceAdapter;
-import br.com.urc.dialog.LoadingDialog;
-import br.com.urc.handler.WifiP2pHandler;
+import br.com.urc.view.adapters.ListDeviceAdapter;
+import br.com.urc.view.dialog.LoadingDialog;
+import br.com.urc.client.handler.WifiP2pHandler;
 
 public class ListDevicesActivity extends AppCompatActivity {
 

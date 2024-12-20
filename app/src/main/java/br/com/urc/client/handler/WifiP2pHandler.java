@@ -1,4 +1,4 @@
-package br.com.urc.handler;
+package br.com.urc.client.handler;
 
 import static br.com.urc.common.Contants.LOG_TAG;
 

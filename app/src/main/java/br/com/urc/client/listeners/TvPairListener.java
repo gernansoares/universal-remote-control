@@ -1,12 +1,10 @@
-package br.com.urc.common.config;
+package br.com.urc.client.listeners;
 
 import static br.com.urc.common.Contants.LOG_TAG;
 
 import android.util.Log;
 
 import androidx.annotation.NonNull;
-
-import java.io.IOException;
 
 import br.com.urc.activities.RemoteControlActivity;
 import okhttp3.Response;

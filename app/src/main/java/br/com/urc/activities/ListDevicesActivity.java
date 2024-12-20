@@ -1,6 +1,6 @@
 package br.com.urc.activities;
 
-import static br.com.urc.common.Contants.DEVICE_EXTRA_NAME;
+import static br.com.urc.common.Contants.DEVICE_ID_EXTRA_NAME;
 import static br.com.urc.common.Contants.LOG_TAG;
 
 import androidx.annotation.NonNull;
@@ -9,23 +9,15 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import android.annotation.SuppressLint;
-import android.app.ActionBar;
-import android.app.ProgressDialog;
-import android.content.DialogInterface;
 import android.content.Intent;
-import android.net.wifi.p2p.WifiP2pConfig;
 import android.net.wifi.p2p.WifiP2pDevice;
 import android.net.wifi.p2p.WifiP2pManager;
 import android.os.Bundle;
-import android.os.Handler;
-import android.os.Looper;
-import android.os.PersistableBundle;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 
 import java.util.List;
-import java.util.Optional;
 
 import br.com.urc.R;
 import br.com.urc.adapters.ListDeviceAdapter;
@@ -130,7 +122,7 @@ public class ListDevicesActivity extends AppCompatActivity {
 
     public void startRemoteControl(String ip) {
         Intent intent = new Intent(this, RemoteControlActivity.class);
-        intent.putExtra(DEVICE_EXTRA_NAME, ip);
+        intent.putExtra(DEVICE_ID_EXTRA_NAME, ip);
         startActivity(intent);
     }
 

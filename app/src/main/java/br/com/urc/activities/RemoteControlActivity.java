@@ -1,6 +1,7 @@
 package br.com.urc.activities;
 
-import static br.com.urc.common.Contants.DEVICE_EXTRA_NAME;
+import static br.com.urc.common.Contants.DEVICE_ID_EXTRA_NAME;
+import static br.com.urc.common.Contants.DEVICE_IP_EXTRA_NAME;
 import static br.com.urc.common.Contants.LOG_TAG;
 import static br.com.urc.common.Contants.TLS;
 
@@ -23,10 +24,11 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import br.com.urc.R;
-import br.com.urc.common.config.GenericTrustManager;
-import br.com.urc.common.config.TvPairListener;
+import br.com.urc.TokenHandler;
+import br.com.urc.common.config.ssl.GenericTrustManager;
+import br.com.urc.client.listeners.TvPairListener;
 import br.com.urc.enums.TvCommand;
-import br.com.urc.common.interceptor.WebSocketInterceptor;
+import br.com.urc.client.interceptors.WebSocketInterceptor;
 import lombok.Setter;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -40,7 +42,9 @@ public class RemoteControlActivity extends AppCompatActivity {
     private final String SAMSUNG_URL_WITH_TOKEN = SAMSUNG_URL + "&token=%s";
     private String token;
     private String ip;
+    private String id;
     private OkHttpClient client;
+    private TokenHandler tokenHandler;
 
     @Setter
     private WebSocket webSocket;
@@ -53,7 +57,7 @@ public class RemoteControlActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         initializeObjects();
         initializeUi();
-        connect(getIntent().getStringExtra(DEVICE_EXTRA_NAME));
+        connect();
     }
 
     @Override
@@ -75,6 +79,10 @@ public class RemoteControlActivity extends AppCompatActivity {
 
     private void initializeObjects() {
         try {
+            ip = getIntent().getStringExtra(DEVICE_IP_EXTRA_NAME);
+            id = getIntent().getStringExtra(DEVICE_ID_EXTRA_NAME);
+            tokenHandler = new TokenHandler(this);
+
             TrustManager[] trustAllCertificates = new TrustManager[]{
                     new GenericTrustManager()
             };
@@ -114,8 +122,8 @@ public class RemoteControlActivity extends AppCompatActivity {
         findViewById(R.id.exit).setOnClickListener(view -> sendCommand(TvCommand.EXIT));
     }
 
-    private void connect(String ip) {
-        this. ip = ip;
+    private void connect() {
+        this.token = tokenHandler.get(id);
         String formattedUrl = encode(Optional.ofNullable(token)
                 .map(t -> String.format(SAMSUNG_URL_WITH_TOKEN, ip, token))
                 .orElseGet(() -> String.format(SAMSUNG_URL, ip)));
@@ -162,10 +170,10 @@ public class RemoteControlActivity extends AppCompatActivity {
             Log.i(LOG_TAG, "Token received: " + token);
 
             if (this.token == null) {
-                this.token = token;
+                tokenHandler.save(id, token);
                 Log.i(LOG_TAG, "Token saved: " + token);
                 closeSocket();
-                connect(ip);
+                connect();
             }
         }
     }

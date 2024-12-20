@@ -1,4 +1,4 @@
-package br.com.urc.common.config;
+package br.com.urc.common.config.ssl;
 
 import java.security.cert.X509Certificate;
 

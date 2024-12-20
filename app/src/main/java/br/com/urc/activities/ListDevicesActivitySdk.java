@@ -1,6 +1,7 @@
 package br.com.urc.activities;
 
-import static br.com.urc.common.Contants.DEVICE_EXTRA_NAME;
+import static br.com.urc.common.Contants.DEVICE_ID_EXTRA_NAME;
+import static br.com.urc.common.Contants.DEVICE_IP_EXTRA_NAME;
 import static br.com.urc.common.Contants.LOG_TAG;
 
 import android.content.Intent;
@@ -21,11 +22,13 @@ import com.samsung.multiscreen.Search;
 import com.samsung.multiscreen.Service;
 
 import br.com.urc.R;
+import br.com.urc.TokenHandler;
 import br.com.urc.adapters.ListDeviceAdapterSdk;
 import br.com.urc.dialog.LoadingDialog;
 
 public class ListDevicesActivitySdk extends AppCompatActivity {
 
+    private TokenHandler tokenHandler;
     private Search search;
     private List<Service> devices;
     private RecyclerView devicesListRV;
@@ -84,8 +87,8 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
                     if (!devices.contains(service)) {
                         devices.add(service);
                         loadDevices();
-                        closeLoadingDialog();
                     }
+                    closeLoadingDialog();
                 }
         );
 
@@ -114,6 +117,7 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
 
     private void initializeObjects() {
         try {
+            tokenHandler = new TokenHandler(this);
             devices = new ArrayList<>();
             devicesListRV = findViewById(R.id.devicesListRV);
         } catch (Exception e) {
@@ -130,7 +134,8 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
 
     public void connectToDevice(Service service) {
         Intent intent = new Intent(this, RemoteControlActivity.class);
-        intent.putExtra(DEVICE_EXTRA_NAME, service.getUri().getHost());
+        intent.putExtra(DEVICE_ID_EXTRA_NAME, service.getId());
+        intent.putExtra(DEVICE_IP_EXTRA_NAME, service.getUri().getHost());
         startActivity(intent);
     }
 }

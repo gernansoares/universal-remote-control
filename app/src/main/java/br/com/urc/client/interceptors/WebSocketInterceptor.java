@@ -1,4 +1,4 @@
-package br.com.urc.common.interceptor;
+package br.com.urc.client.interceptors;
 
 import java.io.IOException;
 

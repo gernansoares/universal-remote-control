@@ -15,8 +15,8 @@ import org.json.JSONObject;
 
 import java.nio.charset.Charset;
 import java.nio.charset.StandardCharsets;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
+import java.util.Optional;
+import java.util.concurrent.TimeUnit;
 
 import javax.net.ssl.SSLContext;
 import javax.net.ssl.TrustManager;
@@ -26,6 +26,7 @@ import br.com.urc.R;
 import br.com.urc.common.config.GenericTrustManager;
 import br.com.urc.common.config.TvPairListener;
 import br.com.urc.enums.TvCommand;
+import br.com.urc.common.interceptor.WebSocketInterceptor;
 import lombok.Setter;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
@@ -33,9 +34,12 @@ import okhttp3.WebSocket;
 
 public class RemoteControlActivity extends AppCompatActivity {
 
+    private final Integer TIMEOUT = 30;
     private final Charset PAYLOAD_CHARSET = StandardCharsets.UTF_8;
     private final String SAMSUNG_URL = "wss://%s:8002/api/v2/channels/samsung.remote.control?name=UniversalRemoteControl";
+    private final String SAMSUNG_URL_WITH_TOKEN = SAMSUNG_URL + "&token=%s";
     private String token;
+    private String ip;
     private OkHttpClient client;
 
     @Setter
@@ -49,7 +53,7 @@ public class RemoteControlActivity extends AppCompatActivity {
         getSupportActionBar().hide();
         initializeObjects();
         initializeUi();
-        pairWithTV(getIntent().getStringExtra(DEVICE_EXTRA_NAME));
+        connect(getIntent().getStringExtra(DEVICE_EXTRA_NAME));
     }
 
     @Override
@@ -78,8 +82,13 @@ public class RemoteControlActivity extends AppCompatActivity {
             sslContext.init(null, trustAllCertificates, new java.security.SecureRandom());
 
             client = new OkHttpClient.Builder()
+                    .readTimeout(TIMEOUT, TimeUnit.SECONDS)
+                    .writeTimeout(TIMEOUT, TimeUnit.SECONDS)
+                    .connectTimeout(TIMEOUT, TimeUnit.SECONDS)
+                    .callTimeout(TIMEOUT, TimeUnit.SECONDS)
+                    .addInterceptor(new WebSocketInterceptor())
                     .sslSocketFactory(sslContext.getSocketFactory(), (X509TrustManager) trustAllCertificates[0])
-                    .hostnameVerifier((hostname, session) -> true)  // Trust all hostnames
+                    .hostnameVerifier((hostname, session) -> true)
                     .build();
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
@@ -105,8 +114,11 @@ public class RemoteControlActivity extends AppCompatActivity {
         findViewById(R.id.exit).setOnClickListener(view -> sendCommand(TvCommand.EXIT));
     }
 
-    private void pairWithTV(String ip) {
-        String formattedUrl = String.format(SAMSUNG_URL, ip);
+    private void connect(String ip) {
+        this. ip = ip;
+        String formattedUrl = encode(Optional.ofNullable(token)
+                .map(t -> String.format(SAMSUNG_URL_WITH_TOKEN, ip, token))
+                .orElseGet(() -> String.format(SAMSUNG_URL, ip)));
         Request request = new Request.Builder().url(formattedUrl).build();
         webSocket = client.newWebSocket(request, new TvPairListener(this));
     }
@@ -123,18 +135,20 @@ public class RemoteControlActivity extends AppCompatActivity {
                     + "    \"TypeOfRemote\": \"SendRemoteKey\""
                     + "}"
                     + "}";
-            byte[] payloadBytes = payload.getBytes(PAYLOAD_CHARSET);
-            String payloadCharset = new String(payloadBytes, PAYLOAD_CHARSET);
-            Log.d(LOG_TAG, "Sending command: " + payloadCharset);
-            webSocket.send(payloadCharset);
+            Log.d(LOG_TAG, "Sending command: " + encode(payload));
+            webSocket.send(encode(payload));
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
         }
     }
 
+    private String encode(String value) {
+        byte[] payloadBytes = value.getBytes(PAYLOAD_CHARSET);
+        return  new String(payloadBytes, PAYLOAD_CHARSET);
+    }
+
     public void receiveResponse(String response) {
         try {
-            Log.e(LOG_TAG, "Message from socket: " + response);
             saveToken(response);
         } catch (JSONException e) {
             Log.e(LOG_TAG, e.getMessage());
@@ -150,6 +164,8 @@ public class RemoteControlActivity extends AppCompatActivity {
             if (this.token == null) {
                 this.token = token;
                 Log.i(LOG_TAG, "Token saved: " + token);
+                closeSocket();
+                connect(ip);
             }
         }
     }

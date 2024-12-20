@@ -184,6 +184,7 @@ public class WifiP2pHandler {
                                                         Log.e(LOG_TAG, "Device group has no address.");
                                                     } else {
                                                         Log.i(LOG_TAG, "Launching remote.");
+                                                        addOperation(WifiP2pOperation.DISCONNECT);
                                                         executeNextOperation();
                                                         activity.startRemoteControl(v.groupOwnerAddress.getHostAddress());
                                                     }

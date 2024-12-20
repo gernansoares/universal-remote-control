@@ -40,7 +40,8 @@ public class MainActivity extends AppCompatActivity {
     private final List<String> permissions = Arrays.asList(Manifest.permission.ACCESS_FINE_LOCATION,
             Manifest.permission.ACCESS_COARSE_LOCATION, Manifest.permission.NEARBY_WIFI_DEVICES,
             Manifest.permission.INTERNET, Manifest.permission.ACCESS_NETWORK_STATE,
-            Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.NEARBY_WIFI_DEVICES);
+            Manifest.permission.CHANGE_WIFI_STATE, Manifest.permission.NEARBY_WIFI_DEVICES,
+            Manifest.permission.CHANGE_WIFI_MULTICAST_STATE);
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -63,7 +64,7 @@ public class MainActivity extends AppCompatActivity {
     }
 
     private void startListDevices() {
-        Intent listDevices = new Intent(this, ListDevicesActivity.class);
+        Intent listDevices = new Intent(this, ListDevicesActivitySdk.class);
         startActivity(listDevices);
     }
 }

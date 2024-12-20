@@ -1,9 +1,7 @@
 package br.com.urc.holders;
 
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.view.View;
 import android.widget.Button;
-import android.widget.TextView;
 
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;

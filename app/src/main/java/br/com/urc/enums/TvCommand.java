@@ -1,8 +1,5 @@
 package br.com.urc.enums;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import lombok.Getter;
 
 @Getter

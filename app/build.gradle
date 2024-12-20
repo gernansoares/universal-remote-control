@@ -1,5 +1,10 @@
 plugins {
     id 'com.android.application'
+    id 'checkstyle'
+}
+
+project.afterEvaluate {
+    preBuild.dependsOn 'checkstyle'
 }
 
 android {

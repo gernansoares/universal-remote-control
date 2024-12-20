@@ -24,7 +24,7 @@ import javax.net.ssl.TrustManager;
 import javax.net.ssl.X509TrustManager;
 
 import br.com.urc.R;
-import br.com.urc.TokenHandler;
+import br.com.urc.handler.TokenHandler;
 import br.com.urc.common.config.ssl.GenericTrustManager;
 import br.com.urc.client.listeners.TvPairListener;
 import br.com.urc.enums.TvCommand;

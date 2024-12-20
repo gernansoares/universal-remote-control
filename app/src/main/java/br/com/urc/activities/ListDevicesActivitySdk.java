@@ -22,17 +22,13 @@ import com.samsung.multiscreen.Search;
 import com.samsung.multiscreen.Service;
 
 import br.com.urc.R;
-import br.com.urc.TokenHandler;
 import br.com.urc.adapters.ListDeviceAdapterSdk;
-import br.com.urc.dialog.LoadingDialog;
 
 public class ListDevicesActivitySdk extends AppCompatActivity {
 
-    private TokenHandler tokenHandler;
     private Search search;
     private List<Service> devices;
     private RecyclerView devicesListRV;
-    private LoadingDialog loadingDialog;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -61,14 +57,12 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
     @Override
     protected void onResume() {
         super.onResume();
-        openLoadingDialog();
         search.start();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
-        closeLoadingDialog();
         search.stop();
     }
 
@@ -88,7 +82,6 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
                         devices.add(service);
                         loadDevices();
                     }
-                    closeLoadingDialog();
                 }
         );
 
@@ -100,24 +93,8 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
         );
     }
 
-    public void openLoadingDialog() {
-        if (loadingDialog == null) {
-            loadingDialog = LoadingDialog.newInstance();
-            loadingDialog.setCancelable(false);
-            loadingDialog.show(getSupportFragmentManager(), "loadingDialog");
-        }
-    }
-
-    public void closeLoadingDialog() {
-        if (loadingDialog != null && loadingDialog.isVisible()) {
-            loadingDialog.dismiss();
-            loadingDialog = null;
-        }
-    }
-
     private void initializeObjects() {
         try {
-            tokenHandler = new TokenHandler(this);
             devices = new ArrayList<>();
             devicesListRV = findViewById(R.id.devicesListRV);
         } catch (Exception e) {

@@ -1,4 +1,4 @@
-package br.com.urc;
+package br.com.urc.handler;
 
 import android.content.Context;
 import android.content.SharedPreferences;

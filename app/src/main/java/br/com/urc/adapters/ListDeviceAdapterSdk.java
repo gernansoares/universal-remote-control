@@ -1,6 +1,5 @@
 package br.com.urc.adapters;
 
-import android.net.wifi.p2p.WifiP2pDevice;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,7 +12,6 @@ import com.samsung.multiscreen.Service;
 import java.util.List;
 
 import br.com.urc.R;
-import br.com.urc.activities.ListDevicesActivity;
 import br.com.urc.activities.ListDevicesActivitySdk;
 import br.com.urc.holders.DeviceHolder;
 

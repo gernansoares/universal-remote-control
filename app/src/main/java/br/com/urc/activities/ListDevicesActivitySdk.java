@@ -17,34 +17,34 @@ import android.view.animation.RotateAnimation;
 import android.widget.ImageView;
 
 import androidx.annotation.NonNull;
-import androidx.appcompat.app.AppCompatActivity;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.samsung.multiscreen.Search;
-import com.samsung.multiscreen.Service;
-
 import br.com.urc.R;
+import br.com.urc.detection.DeviceLister;
+import br.com.urc.detection.DeviceSource;
+import br.com.urc.detection.SamsungDeviceSource;
+import br.com.urc.model.Device;
 import br.com.urc.view.adapters.ListDeviceAdapterSdk;
 
-public class ListDevicesActivitySdk extends AppCompatActivity {
+public class ListDevicesActivitySdk extends DeviceLister {
 
     private final Long SEARCH_DURATION = (long) (1000 * 10);
+    private final Boolean LOCK = true;
     private Boolean discovering;
-    private Search search;
-    private List<Service> devices;
+    private List<Device> devices;
     private RecyclerView devicesListRV;
     private MenuItem refresh;
+    private List<DeviceSource> sources;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_list_devices);
         initializeObjects();
-        initializeSearch();
     }
 
     @Override
@@ -55,6 +55,24 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
         actionView.setOnClickListener(v -> onOptionsItemSelected(refresh));
         actionView.performClick();
         return super.onCreateOptionsMenu(menu);
+    }
+
+    @Override
+    public synchronized void addDevice(Device device) {
+        synchronized (LOCK) {
+            if (!devices.contains(device)) {
+                devices.add(device);
+                loadDevices();
+            }
+        }
+    }
+
+    @Override
+    public void removeDevice(Device device) {
+        synchronized (LOCK) {
+            devices.remove(device);
+            loadDevices();
+        }
     }
 
     private void rotateMenuItemIcon(MenuItem item) {
@@ -106,54 +124,35 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
 
     private void startDiscovery() {
         Log.d(LOG_TAG, "Trying to start discover");
-        synchronized (discovering) {
+        synchronized (LOCK) {
             if (!discovering) {
-                Log.d(LOG_TAG, "Discover started");
-                search.start();
                 discovering = true;
+                sources.forEach(DeviceSource::startDiscovery);
                 refresh.getActionView().setEnabled(false);
                 new Handler(Looper.getMainLooper()).postDelayed(this::stopDiscovery, SEARCH_DURATION);
+                Log.d(LOG_TAG, "Discover started");
             }
         }
     }
 
     private void stopDiscovery() {
         Log.d(LOG_TAG, "Trying to stop discover");
-        synchronized (discovering) {
+        synchronized (LOCK) {
             if (discovering) {
-                Log.d(LOG_TAG, "Discover stopped");
-                search.stop();
+                sources.forEach(DeviceSource::stopDiscovery);
                 discovering = false;
                 refresh.getActionView().setEnabled(true);
+                Log.d(LOG_TAG, "Discover stopped");
             }
         }
-    }
-
-    private void initializeSearch() {
-        search = Service.search(this);
-
-        search.setOnServiceFoundListener(
-                service -> {
-                    Log.d(LOG_TAG, "Search.onFound() service: " + service.toString());
-                    if (!devices.contains(service)) {
-                        devices.add(service);
-                        loadDevices();
-                    }
-                }
-        );
-
-        search.setOnServiceLostListener(
-                service -> {
-                    Log.d(LOG_TAG, "Search.onLost() service: " + service.toString());
-                    devices.remove(service);
-                }
-        );
     }
 
     private void initializeObjects() {
         try {
             discovering = false;
             devices = new ArrayList<>();
+            sources = new ArrayList<>();
+            sources.add(new SamsungDeviceSource(this));
             devicesListRV = findViewById(R.id.devicesListRV);
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());
@@ -167,10 +166,10 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
         devicesListRV.setLayoutManager(layout);
     }
 
-    public void connectToDevice(Service service) {
+    public void connectToDevice(Device device) {
         Intent intent = new Intent(this, RemoteControlActivity.class);
-        intent.putExtra(DEVICE_ID_EXTRA_NAME, service.getId());
-        intent.putExtra(DEVICE_IP_EXTRA_NAME, service.getUri().getHost());
+        intent.putExtra(DEVICE_ID_EXTRA_NAME, device.getId());
+        intent.putExtra(DEVICE_IP_EXTRA_NAME, device.getIp());
         startActivity(intent);
     }
 }

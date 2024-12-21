@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Universal Remote Control</string>
+    <string name="provide_permissions">Provide permissions</string>
+    <string name="msg_permissions">Please provide the needed permissions to run the app, it will be used to discover and connect to devices</string>
+    <string name="msg_permissions_missing">All requested permissions are needed to run the app</string>
+    <string name="msg_permissions_manually">Not possible to request permissions, please provide in the app settings</string>
     <string name="ok">Ok</string>
+    <string name="cancel">Cancel</string>
 </resources>

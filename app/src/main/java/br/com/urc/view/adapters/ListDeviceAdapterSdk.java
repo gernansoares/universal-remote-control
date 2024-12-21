@@ -7,20 +7,19 @@ import android.view.ViewGroup;
 import androidx.annotation.NonNull;
 import androidx.recyclerview.widget.RecyclerView;
 
-import com.samsung.multiscreen.Service;
-
 import java.util.List;
 
 import br.com.urc.R;
 import br.com.urc.activities.ListDevicesActivitySdk;
+import br.com.urc.model.Device;
 import br.com.urc.view.holders.DeviceHolder;
 
 public class ListDeviceAdapterSdk extends RecyclerView.Adapter {
 
     private ListDevicesActivitySdk context;
-    private List<Service> devices;
+    private List<Device> devices;
 
-    public ListDeviceAdapterSdk(ListDevicesActivitySdk context, List<Service> devices) {
+    public ListDeviceAdapterSdk(ListDevicesActivitySdk context, List<Device> devices) {
         this.context = context;
         this.devices = devices;
     }
@@ -35,7 +34,7 @@ public class ListDeviceAdapterSdk extends RecyclerView.Adapter {
     @Override
     public void onBindViewHolder(@NonNull RecyclerView.ViewHolder view, int position) {
         DeviceHolder holder = (DeviceHolder) view;
-        final Service device = devices.get(position);
+        final Device device = devices.get(position);
         holder.getDeviceName().setText(device.getName());
         holder.getDeviceName().setOnClickListener(v -> context.connectToDevice(device));
 

@@ -115,7 +115,6 @@ public class ListDevicesActivitySdk extends AppCompatActivity {
                 new Handler(Looper.getMainLooper()).postDelayed(this::stopDiscovery, SEARCH_DURATION);
             }
         }
-
     }
 
     private void stopDiscovery() {

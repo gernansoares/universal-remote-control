@@ -37,7 +37,7 @@ import okhttp3.WebSocket;
 public class RemoteControlActivity extends AppCompatActivity {
 
     private final Integer TIMEOUT = 30;
-    private final Charset PAYLOAD_CHARSET = StandardCharsets.UTF_8;
+    private final Charset PAYLOAD_CHARSET = StandardCharsets.ISO_8859_1;
     private final String SAMSUNG_URL = "wss://%s:8002/api/v2/channels/samsung.remote.control?name=UniversalRemoteControl";
     private final String SAMSUNG_URL_WITH_TOKEN = SAMSUNG_URL + "&token=%s";
     private String token;
@@ -143,7 +143,7 @@ public class RemoteControlActivity extends AppCompatActivity {
                     + "    \"TypeOfRemote\": \"SendRemoteKey\""
                     + "}"
                     + "}";
-            Log.d(LOG_TAG, "Sending command: " + encode(payload));
+            Log.d(LOG_TAG, "Sending command: " + payload);
             webSocket.send(encode(payload));
         } catch (Exception e) {
             Log.e(LOG_TAG, e.getMessage());

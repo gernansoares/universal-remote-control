@@ -4,8 +4,7 @@
     tools:context="com.vi8e.giant.AddressListActivity">
     <item
         android:id="@+id/refresh"
-        android:icon="@drawable/ic_refresh"
-        android:orderInCategory="100"
         android:title="@string/app_name"
+        app:actionLayout="@layout/menuitem"
         app:showAsAction="always" />
 </menu>

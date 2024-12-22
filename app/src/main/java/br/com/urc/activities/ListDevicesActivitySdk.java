@@ -3,6 +3,7 @@ package br.com.urc.activities;
 import static br.com.urc.common.Contants.DEVICE_ID_EXTRA_NAME;
 import static br.com.urc.common.Contants.DEVICE_IP_EXTRA_NAME;
 import static br.com.urc.common.Contants.LOG_TAG;
+import static br.com.urc.common.Contants.MANUFACTURER_ID_EXTRA_NAME;
 
 import android.content.Intent;
 import android.os.Bundle;
@@ -21,6 +22,7 @@ import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import br.com.urc.R;
@@ -150,7 +152,7 @@ public class ListDevicesActivitySdk extends DeviceLister {
     private void initializeObjects() {
         try {
             discovering = false;
-            devices = new ArrayList<>();
+            devices = Collections.synchronizedList(new ArrayList<>());
             sources = new ArrayList<>();
             sources.add(new SamsungDeviceSource(this));
             devicesListRV = findViewById(R.id.devicesListRV);
@@ -170,6 +172,7 @@ public class ListDevicesActivitySdk extends DeviceLister {
         Intent intent = new Intent(this, RemoteControlActivity.class);
         intent.putExtra(DEVICE_ID_EXTRA_NAME, device.getId());
         intent.putExtra(DEVICE_IP_EXTRA_NAME, device.getIp());
+        intent.putExtra(MANUFACTURER_ID_EXTRA_NAME, device.getManufacturer().name());
         startActivity(intent);
     }
 }

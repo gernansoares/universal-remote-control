@@ -1,6 +1,6 @@
 package br.com.urc.common.enums;
 
-public enum Manufacter {
+public enum Manufacturer {
 
     SAMSUNG;
 

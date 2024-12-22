@@ -7,22 +7,21 @@ import android.util.Log;
 import com.samsung.multiscreen.Search;
 import com.samsung.multiscreen.Service;
 
+import br.com.urc.common.enums.Manufacturer;
 import br.com.urc.model.Device;
 
 public class SamsungDeviceSource implements DeviceSource {
 
-    private DeviceLister deviceLister;
-
-    private Search search;
+    private final DeviceLister deviceLister;
+    private final Search search;
 
     public SamsungDeviceSource(DeviceLister deviceLister) {
         this.deviceLister = deviceLister;
+        this.search = Service.search(deviceLister);
         initializeSearch();
     }
 
     private void initializeSearch() {
-        search = Service.search(deviceLister);
-
         search.setOnServiceFoundListener(
                 service -> {
                     Log.d(LOG_TAG, "Search.onFound() service: " + service.toString());
@@ -39,7 +38,7 @@ public class SamsungDeviceSource implements DeviceSource {
     }
 
     private Device buildDevice(Service service) {
-        return new Device(service.getId(), service.getUri().getHost(), service.getName());
+        return new Device(service.getId(), service.getUri().getHost(), service.getName(), Manufacturer.SAMSUNG);
     }
 
     @Override
